@@ -19,6 +19,10 @@ const routes = [
     path: '/CSE274-RealtimeDenoiser-WebPage',
     redirect: '/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser',
   },
+  {
+    path: '/',
+    redirect: '/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser',
+  },
 ];
 
 const router = createRouter({

@@ -1,8 +1,8 @@
 <template>
-  <nav>
+  <!-- <nav>
     <router-link to="/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser">Home</router-link> |
     <router-link to="/CSE274-RealtimeDenoiser-WebPage/about">About</router-link>
-  </nav>
+  </nav> -->
   <router-view/>
 </template>
 
