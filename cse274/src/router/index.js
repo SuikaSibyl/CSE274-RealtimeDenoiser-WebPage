@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/cse274-realtime-denoiser',
     name: 'home',
     component: HomeView,
   },
@@ -17,7 +17,7 @@ const routes = [
   },
   {
     path: '/CSE274-RealtimeDenoiser-WebPage',
-    redirect: '/',
+    redirect: '/cse274-realtime-denoiser',
   },
 ];
 
