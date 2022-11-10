@@ -15,6 +15,10 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
   },
+  {
+    path: '/CSE274-RealtimeDenoiser-WebPage',
+    redirect: '/',
+  },
 ];
 
 const router = createRouter({
