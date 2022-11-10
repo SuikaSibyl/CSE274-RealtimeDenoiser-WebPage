@@ -1,7 +1,7 @@
 <template>
   <nav>
-    <router-link to="/cse274-realtime-denoiser">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser">Home</router-link> |
+    <router-link to="/CSE274-RealtimeDenoiser-WebPage/about">About</router-link>
   </nav>
   <router-view/>
 </template>

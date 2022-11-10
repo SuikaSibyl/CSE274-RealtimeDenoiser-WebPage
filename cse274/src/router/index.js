@@ -3,12 +3,12 @@ import HomeView from '../views/HomeView.vue';
 
 const routes = [
   {
-    path: '/cse274-realtime-denoiser',
+    path: '/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser',
     name: 'home',
     component: HomeView,
   },
   {
-    path: '/about',
+    path: '/CSE274-RealtimeDenoiser-WebPage/about',
     name: 'about',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -17,7 +17,7 @@ const routes = [
   },
   {
     path: '/CSE274-RealtimeDenoiser-WebPage',
-    redirect: '/cse274-realtime-denoiser',
+    redirect: '/CSE274-RealtimeDenoiser-WebPage/cse274-realtime-denoiser',
   },
 ];
 
