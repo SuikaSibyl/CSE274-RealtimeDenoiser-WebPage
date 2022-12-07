@@ -2,12 +2,14 @@
   <div class="home">
     <div class="common-layout">
       <el-container>
+      <el-container>
         <el-header>
-          <h1 id="Milestone 2 For CSE 274">Milestone 2 For CSE 274</h1>
+          <h1 id="Report For CSE 274">A Priori Frequency Analysis Based Denoiser</h1>
         </el-header>
         <el-container>
           <el-container>
             <el-main>
+              <!-- Chapter 1: Introduction -->
               <el-row class="row-bg">
                 <h2 id="1. Introduction">1. Introduction</h2>
                 <p style="text-align:left">
@@ -38,7 +40,7 @@
               <el-row class="row-bg" justify="left">
                 <p style="text-align:left">
                 <br>
-                  And some closely related papers are:
+                  And some closely related papers (will be talked about) are:
                 </p>
               </el-row>
               <el-row class="row-bg" justify="left">
@@ -55,7 +57,16 @@
                 <br>
                 <p style="text-align:left">
                   Implementation is only compatible with Windows OS and Nvidia RTX GPU.
-                  All the results are run and measuredon my personal RTX 3070 laptop.
+                  All the results are run and measured on my personal RTX 3070 laptop.
+                </p>
+              </el-row>
+              <!-- Chapter 2: Related Work -->
+              <el-row class="row-bg" justify="left">
+                <h2 id="2. Related Work">2. Related Work</h2>
+                <p style="text-align:left">
+                  Here is a summary of commons and differences of all these related works,
+                  using different filters and handling different distribution effects, but
+                  all based on local frequency analysis.
                 </p>
               </el-row>
               <!-- Chapter 2: Implementation -->
@@ -63,7 +74,8 @@
                 <h2 id="2. Implementation">2. Implementation Theory</h2>
                 <p style="text-align:left">
                   Here is a summary of commons and differences of all these related works,
-                  using different filters and handling different distribution effects:
+                  using different filters and handling different distribution effects, but
+                  all based on local frequency analysis.
                 </p>
                 <el-row class="row-bg" justify="left">
                   <h3 id="2.1. inisamp">2.1 Initial Sampling & Frequency Domain Slope</h3><br/>
@@ -72,23 +84,23 @@
               <el-row class="row-bg" justify="left">
                 <p style="text-align:left">
                   The 2D f(x,y) term we are interested in, is turned out to be a shear shape
-                  in primal domain and a line in Fourier domain. If there
-                  are more than one (or not parallel) frequency resource, there would be multiple
+                  in primal domain and a line in Fourier domain (which is orthogonal). If there
+                  are more than one (or not parallel) frequency source, there would be multiple
                   lines and form a double wedge shape.
                 </p>
                 <el-row class="row-bg" justify="left">
                   <li style="text-align:left">
                     <strong>Soft Shadow:</strong> For each primary ray shading point,
                     find the distance to light (center) <code>d1</code>.
-                    Then emit 9 shadow ray from the shading point, who are
+                    Then emit multiple shadow ray from the shading point, who are
                     stratified distributed on the light surface, collecting the minimum
                     and maximum distance from light to any occluder along the ray,
-                    <code>d2_min</code> and <code>d2_max</code>. The Fourier space slope is:
+                    <code>d2</code>. The Fourier space slope is:
                     <vue-latex :expression="'s=d_1/d_2-1'" display-mode/>
                   </li>
                   <li style="text-align:left">
-                    <strong>Global Illumination:</strong> For each primary ray, emit 16 secondary
-                    rays from the shading point stratified distributed on the hemisphere,
+                    <strong>Global Illumination:</strong> For each primary ray, emit multiple
+                    secondary rays from the shading point stratified distributed on the hemisphere,
                     collecting the minimum and maximum distance <code>z</code> from shading point
                     to any reflector. The Fourier space slope is:
                     <vue-latex :expression="'s=z'" display-mode/>
@@ -98,11 +110,23 @@
                     collecting the minimum and maximum depth <code>z</code> of any hit objects.
                     Also given the half-width of the image in pixels <code>v</code>, the focal
                     distance <code>F</code>, the size of the focal plane <code>S</code>.
-                    The Fourier space slope is:
+                    The Fourier space slope is: <br/>
                     <vue-latex :expression="'s=\\frac{V}{S}(\\frac{F}{z}-1)'" display-mode/>
+                    It is worth to notice that this slope value
+                    is also known as Circle of Confusion (CoC) in Depth of Field
+                    rendering. We know anything that's not at focus plane will projects to a
+                    region (instead of to a point) on the film. The diameter of this region is CoC
+                    and is exactly the Fourier space slope, but notice its sign will be different
+                    in foreground and background regions.
+                    <vue-latex :expression="''" display-mode/>
                   </li>
                   <li style="text-align:left">
-                    <strong>Motion Blur:</strong> May be included later.
+                    <strong>Motion Blur:</strong> Trace multiple primary rays to collect surface
+                    minimum and maximum velocities <code>a</code>. Different objects could have
+                    different velocities, one object does non-uniform motion could also have
+                    different velocities in the shutter period.
+                    The Fourier space slope is:
+                    <vue-latex :expression="'s=-a'" display-mode/>
                   </li>
                 </el-row>
               </el-row>
@@ -113,8 +137,8 @@
                 <p style="text-align:left">
                   The 2D f(x,y) term we are interested in are double-wedge in Fourier space, but
                   they are not bandlimited. But no worries because they are all found to be
-                  filtered by some hero bandlimiter h(y) terms along the y axis, introducing
-                  low-pass bandlimiting.
+                  filtered (convolution in primal domain) by some hero bandlimiter h(y) terms
+                  along the y axis, introducing low-pass bandlimiting.
                 </p>
                 <el-row class="row-bg" justify="left">
                   <li style="text-align:left">
@@ -140,33 +164,6 @@
                     and bandlimited by <code>shutter response</code> function, which is also again
                     assumed to be a Gaussian function.
                   </li>
-                </el-row>
-                <el-row class="row-bg" justify="left">
-                  <br>
-                  <p style="text-align:left">
-                    And actually we could notice the truth that, we need not bother to compute the
-                    bandlimiting in y, because it is just given. It is about area light size, brdf
-                    of surface, lens, shutter. And in AAF, it does not even use an extra gaussian
-                    in y axis when do Monte Carlo integral, as the h term iteself is the one who
-                    introduce the bandlimiting in axis-aligned filter.
-                  </p>
-                  <p style="text-align:left">
-                    The interesting thing is that, when we do MAAF, we no longer include the h term.
-                    I think it is an essential insight that, MAAF actually somewhat decompose the h
-                    term into several parts with different frequency, and reconstruct them
-                    individually and finally modulate them back agian.
-                  </p>
-                  <p style="text-align:left">
-                    For example in GI case, we are decomposing diffuse transfer function. First
-                    imitate some kind of super-diffuse surface, where we get a larger image space
-                    filter to better remove the noise. And then imitate some kind of detail
-                    filter to extract all details and use small image space filter to preserve
-                    necessary details.
-                  </p>
-                  <p style="text-align:left">
-                    The <code>decomposing brdf/transfer function</code> part is where I think
-                    is really cool. Maybe we could do more things about it? I don't now.
-                  </p>
                 </el-row>
               </el-row>
               <el-row class="row-bg" justify="left">
@@ -208,6 +205,35 @@
                 <el-image style="width: 400px; height: 300px" src='https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/spp-gi-cornellbox.png' fit="fill" />
                 <p><code>adaptive ssp computed in cornell box for indirect illumination</code></p>
               </el-row>
+              <el-row class="row-bg" justify="left">
+                  <br>
+                  <p style="text-align:left">
+                    And actually we could notice the truth that, we need not bother to compute the
+                    bandlimiting in y, because it is just given. It is about area light size, brdf
+                    of surface, lens, shutter. And in AAF, it does not even use an extra gaussian
+                    in y axis when do Monte Carlo integral, as the h term iteself is the one who
+                    introduce the bandlimiting in axis-aligned filter.
+                  </p>
+                  <p style="text-align:left">
+                    The interesting thing is that, when we do MAAF, we no longer include the h term.
+                    (except for GI where we preserve the diffuse transfer function which is not a
+                    Gaussian)
+                    I think it is an essential insight that, MAAF actually somewhat decompose the h
+                    term into several parts with different frequency, and reconstruct them
+                    individually and finally modulate them back agian.
+                  </p>
+                  <p style="text-align:left">
+                    For example in GI case, we are decomposing diffuse transfer function. First
+                    imitate some kind of super-diffuse surface, where we get a larger image space
+                    filter to better remove the noise. And then imitate some kind of detail
+                    filter to extract all details and use small image space filter to preserve
+                    necessary details.
+                  </p>
+                  <p style="text-align:left">
+                    The <code>decomposing brdf/transfer function</code> part is where I think
+                    is really cool. Maybe we could do more things about it? I don't now.
+                  </p>
+                </el-row>
               <!-- Chapter 3. Results -->
               <el-row class="row-bg" justify="left">
                 <h2 id="3. Results">3. Results</h2>
@@ -311,19 +337,65 @@
               <el-row class="row-bg" justify="left">
                 <h3 id="3.3. MAAF">3.3 MAAF</h3><br/>
               </el-row>
-              <el-row class="row-bg" justify="left">
-                <p style="text-align:left">// TODO
-                </p>
+              <el-row class="row-bg" justify="center">
+                  <el-col :span=auto>
+                    <div id="maaf1"></div>
+                    <p><code>left: initial sample results | right: AAF filtered result</code></p>
+                    <div id="maaf2"></div>
+                    <p><code>left: AAF filtered result | right: ground truth</code></p>
+                    <div id="maaf3"></div>
+                    <p><code>left: AAF filtered result | right: MAAF filtered result</code></p>
+                    <div id="maaf4"></div>
+                    <p><code>left: MAAF filtered result | right: ground truth</code></p>
+                  </el-col>
+                  <el-col :span="6"><div class="grid-content ep-bg-purple-light" /></el-col>
+                  <el-col :span="6"><div class="grid-content ep-bg-purple" /></el-col>
+              </el-row>
+              <el-row class="row-bg" justify="center">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/ER4TuurEvYM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
               </el-row>
               <!-- Chapter 4: Future Plane -->
               <el-row class="row-bg" justify="left">
-                <h2 id="4. Future Plans">4. Future Plans</h2>
-                <p style="text-align:left">There are about 2 more weeks to go, so generally,
-                  I am going to try to implement MAAF, especially with multiple effects combination
-                  of soft shadow, global illumination and defocs blur. Although I have implemented
-                  AAF already, MAAF seems to be somewhat challenging as no realted code is provided
-                  and some details are not mentioned in the paper. But anyway I will try to do it.
-                </p>
+                <h2 id="4. Application">4. Application Demo</h2>
+              </el-row>
+              <el-row class="row-bg" justify="center">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/WleNYSftuv4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </el-row>
+              <!-- Reference -->
+              <el-row class="row-bg" justify="left">
+                <h2 id="Reference">Reference</h2>
+                <ol>
+                  <li style="text-align:left">
+                    Soham Uday Mehta, Brandon Wang, and Ravi Ramamoorthi. 2012. Axis-aligned
+                    filtering for interactive sampled soft shadows. ACM Trans. Graph. 31, 6,
+                    Article 163 (November 2012), 10 pages.
+                    https://doi.org/10.1145/2366145.2366182
+                  </li>
+                  <li style="text-align:left">
+                    Soham Uday Mehta, Brandon Wang, Ravi Ramamoorthi, and Fredo Durand. 2013.
+                    Axis-aligned filtering for interactive physically-based diffuse indirect
+                    lighting. ACM Trans. Graph. 32, 4, Article 96 (July 2013), 12 pages.
+                    https://doi.org/10.1145/2461912.2461947
+                  </li>
+                  <li style="text-align:left">
+                    Soham Uday Mehta, JiaXian Yao, Ravi Ramamoorthi, and Fredo Durand.
+                    2014. Factored axis-aligned filtering for rendering multiple distribution
+                    effects. ACM Trans. Graph. 33, 4, Article 57 (July 2014), 12 pages.
+                    https://doi.org/10.1145/2601097.2601113
+                  </li>
+                  <li style="text-align:left">
+                    Lifan Wu, Ling-Qi Yan, Alexandr Kuznetsov, and Ravi Ramamoorthi. 2017.
+                    Multiple Axis-Aligned Filters for Rendering of Combined Distribution
+                    Effects. Comput. Graph. Forum 36, 4 (July 2017), 155–166.
+                    https://doi.org/10.1111/cgf.13232
+                  </li>
+                  <li style="text-align:left">
+                    M. Zwicker, W. Jarosz, J. Lehtinen, B. Moon, R. Ramamoorthi, F. Rousselle,
+                    P. Sen, C. Soler, and S.-E. Yoon. 2015. Recent Advances in Adaptive Sampling
+                    and Reconstruction for Monte Carlo Rendering. Comput. Graph. Forum 34, 2
+                    (May 2015), 667–681.
+                  </li>
+                </ol>
               </el-row>
             </el-main>
             <el-divider />
@@ -333,6 +405,7 @@
           </el-container>
         </el-container>
       </el-container>
+    </el-container>
     </div>
   </div>
 </template>
@@ -387,6 +460,42 @@ export default {
       el: '#giFiltGT',
       beforeImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/274denoiser-filtered-gi-cornellbox.png',
       afterImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/274denoiser-benchmark-gi-cornellbox.png',
+      width: '90%', // slide-wrap width, default 100%
+      height: '400px', // slide-wrap height, default image-height
+      line: true, // Dividing line, default true
+      lineColor: 'rgba(0,0,0,0.1)', // Dividing line color, default rgba(0,0,0,0.5)
+    });
+    new SliderBar({
+      el: '#maaf1',
+      beforeImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_input.png',
+      afterImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_AAF.png',
+      width: '90%', // slide-wrap width, default 100%
+      height: '400px', // slide-wrap height, default image-height
+      line: true, // Dividing line, default true
+      lineColor: 'rgba(0,0,0,0.1)', // Dividing line color, default rgba(0,0,0,0.5)
+    });
+    new SliderBar({
+      el: '#maaf2',
+      beforeImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_AAF.png',
+      afterImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_gt.png',
+      width: '90%', // slide-wrap width, default 100%
+      height: '400px', // slide-wrap height, default image-height
+      line: true, // Dividing line, default true
+      lineColor: 'rgba(0,0,0,0.1)', // Dividing line color, default rgba(0,0,0,0.5)
+    });
+    new SliderBar({
+      el: '#maaf3',
+      beforeImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_AAF.png',
+      afterImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/MAAF_maaf.png',
+      width: '90%', // slide-wrap width, default 100%
+      height: '400px', // slide-wrap height, default image-height
+      line: true, // Dividing line, default true
+      lineColor: 'rgba(0,0,0,0.1)', // Dividing line color, default rgba(0,0,0,0.5)
+    });
+    new SliderBar({
+      el: '#maaf4',
+      beforeImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/MAAF_maaf.png',
+      afterImg: 'https://imagehost-suikasibyl-us.oss-us-west-1.aliyuncs.com/maaf_gt.png',
       width: '90%', // slide-wrap width, default 100%
       height: '400px', // slide-wrap height, default image-height
       line: true, // Dividing line, default true
